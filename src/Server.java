@@ -14,8 +14,12 @@
 //
 //********************************************************************
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.ServerSocket;
+import java.net.Socket;
 
 public class Server
 {
@@ -41,17 +45,27 @@ public class Server
 		try {
 			
 				ServerSocket sock = new ServerSocket(4301);
+				Socket client = sock.accept();
+				System.out.println("Client Connected");
+				BufferedReader input = new BufferedReader(
+						new InputStreamReader(client.getInputStream()));
+				
+				PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
 				
 				// listen for connections
 				while (true) {
-				Socket client = sock.accept();
-				System.out.println("Client Connected");
+				String echoString = input.readLine();
+					if(echoString.equals("exit")) {
+						break;
+					}
+					output.println("echo from server: " + echoString + "!!!!@#%$^$");
+				}
 				
 				// close the socket and resume
 				// listening for connections
 				client.close();
 				
-				}
+				
 				
 			} catch (IOException ioe) {
 				
