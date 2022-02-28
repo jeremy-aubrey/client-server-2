@@ -43,29 +43,33 @@ public class Server
 		server.developerInfo();
 		
 		try {
-			
+				
+				System.out.println("starting server");
 				ServerSocket sock = new ServerSocket(4301);
-				Socket client = sock.accept();
-				System.out.println("Client Connected");
-				BufferedReader input = new BufferedReader(
-						new InputStreamReader(client.getInputStream()));
 				
-				PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
-				
-				// listen for connections
 				while (true) {
-				String echoString = input.readLine();
-					if(echoString.equals("exit")) {
-						break;
-					}
-					output.println("echo from server: " + echoString + "!!!!@#%$^$");
-				}
+					
+					Socket client = sock.accept();
+					System.out.println("Client Connected");
+					BufferedReader input = new BufferedReader(
+							new InputStreamReader(client.getInputStream()));
+					
+					PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
+					
+					// listen for connections
+					
+					String echoString = input.readLine();
+						if(echoString.equals("exit")) {
+							break;
+						}
+						output.println("echo from server: " + echoString + "!!!!@#%$^$");
+				
 				
 				// close the socket and resume
 				// listening for connections
 				client.close();
 				
-				
+				}
 				
 			} catch (IOException ioe) {
 				
