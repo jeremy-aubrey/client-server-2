@@ -14,8 +14,12 @@
 //
 //********************************************************************
 
-import java.net.*;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Scanner;
 
 public class Client
 {
@@ -41,9 +45,32 @@ public class Client
 			// make connection to server socket
 			Socket sock = new Socket("127.0.0.1", 4301);
 			
+			BufferedReader echoes = new BufferedReader(
+					new InputStreamReader(sock.getInputStream()));
+			
+			PrintWriter stringToEcho = new PrintWriter(sock.getOutputStream(), true);
+			
+			Scanner scanner = new Scanner(System.in);
+			String echoString;
+			String response;
+			
+			do {
+				System.out.println("Enter a message: ");
+				echoString = scanner.nextLine();
+				stringToEcho.println(echoString);
+				
+				if(!echoString.equals("exit")) {
+					response = echoes.readLine();
+					System.out.println(response);
+				}
+				
+				
+			} while (!echoString.equals("exit"));
+			
 			
 			//close the socket connection
 			sock.close();
+			System.out.println("closed socket");
 				
 		} catch (IOException ioe) {
 				
