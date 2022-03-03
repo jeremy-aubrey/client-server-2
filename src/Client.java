@@ -68,7 +68,7 @@ public class Client
 			
 			//close the socket connection
 			sock.close();
-			System.out.println("closed socket");
+			System.out.println("[ CLOSED SOCKET ]");
 				
 		} catch (IOException ioe) {
 				
