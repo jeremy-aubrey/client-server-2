@@ -63,8 +63,6 @@ public class Client
 					response = echoes.readLine();
 					System.out.println(response);
 				}
-				
-				
 			} while (!echoString.equals("exit"));
 			
 			
