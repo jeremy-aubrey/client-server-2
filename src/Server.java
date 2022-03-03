@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.stream.IntStream;
 
 public class Server
 {
@@ -131,11 +132,28 @@ public class Server
 		} else {
 			
 			// get statistics if valid
-			result = "valid data : " + arrToString(data);
+			result = "Sum: " + getSum(data);
 		}
 		
 		return result;
 		
+	}
+	
+	public int getSum(int[] data) {
+		int sum = 0;
+		if(data[2] % 2 == 0) { // even
+			System.out.println("summing evens");
+			sum = IntStream.rangeClosed(data[0], data[1])
+					.filter(x -> x % 2 == 0) //filter out odds
+					.sum();
+		} else { // odd
+			System.out.println("summing odds");
+			sum = IntStream.rangeClosed(data[0], data[1])
+					.filter(x -> x % 2 == 1) //filter out evens
+					.sum();
+		}
+		
+		return sum;
 	}
 	
 	public String arrToString(int[] arr) {
