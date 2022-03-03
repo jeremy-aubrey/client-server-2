@@ -116,7 +116,10 @@ public class Server
 	}
 	
 	public String getStatisticsOrError(int[] data) {
+		
 		String result = "";
+		
+		// validation 
 		if(data.length < 3 || data.length > 3) {
 			result = "Must enter 3 integers";
 		} else if (data[0] <= 0 || data[1] <= 0 || data[2] <= 0) {
@@ -125,8 +128,9 @@ public class Server
 			result = "The first integer must be less than the second";
 		} else if (data[2] != 1 && data[2] != 2) {
 			result = "The third integer must be 1 or 2";
-		
 		} else {
+			
+			// get statistics if valid
 			result = "valid data : " + arrToString(data);
 		}
 		
