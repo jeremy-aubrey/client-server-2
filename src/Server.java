@@ -42,43 +42,77 @@ public class Server
 		Server server = new Server();
 		server.developerInfo();
 		
-		try {
-				
-				System.out.println("starting server");
-				ServerSocket sock = new ServerSocket(4301);
-				
-				while (true) {
-					
-					Socket client = sock.accept();
-					System.out.println("Client Connected");
-					BufferedReader input = new BufferedReader(
-							new InputStreamReader(client.getInputStream()));
-					
-					PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
-					
-					// listen for connections
-					
-					String echoString = input.readLine();
-						if(echoString.equals("exit")) {
-							break;
-						}
-						output.println("echo from server: " + echoString + "!!!!@#%$^$");
-				
-				
-				// close the socket and resume
-				// listening for connections
-				client.close();
-				
-				}
-				
-			} catch (IOException ioe) {
-				
-				System.err.println(ioe);
-				
-			}
+		server.startListening();
+		
 		
 	}// end main method
 	
+	public String processData(String data) {
+		
+		String result = "";
+		String[] strArray = data.split(" ");
+		int[] intArray = new int[strArray.length];
+		
+		try {
+			
+			for(int i = 0; i < strArray.length; i++) {
+				intArray[i] = Integer.parseInt(strArray[i]);
+			}
+			
+			result = arrToString(intArray);
+			
+		} catch (NumberFormatException e) {
+			result = "Invalid data, must be of type integer";
+		}
+		
+		
+		
+		
+		return result;
+		
+	}
+	
+	
+	public String arrToString(int[] arr) {
+		StringBuffer result = new StringBuffer();
+		for(int num : arr) {
+			result.append(num);
+		}
+		
+		return result.toString();
+		
+	}
+	
+	public void startListening() {
+		try {
+			
+			System.out.println("starting server");
+			ServerSocket sock = new ServerSocket(4301);
+			Socket client = sock.accept();
+			System.out.println("Client Connected");
+			BufferedReader input = new BufferedReader(
+					new InputStreamReader(client.getInputStream()));
+			PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
+			
+			while (true) {
+				String recievedMessage = input.readLine();
+				String response = processData(recievedMessage);
+				if(recievedMessage.equals("exit")) {
+					break;
+				}
+				output.println("echo from server: " + response);
+			}
+			
+			// close the socket and resume
+			// listening for connections
+			client.close();
+			
+		} catch (IOException ioe) {
+			
+			System.err.println(ioe);
+			
+		}
+	}
 	
     //***************************************************************
     //
