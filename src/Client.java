@@ -20,6 +20,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Client
 {
@@ -60,9 +62,15 @@ public class Client
 				stringToEcho.println(echoString);
 				
 				if(!echoString.equals("exit")) {
+					
 					response = echoes.readLine();
-					System.out.println(response);
+					
+					while(!response.equals("END")) {
+						System.out.println(response);
+						response = echoes.readLine();
+					}
 				}
+				
 			} while (!echoString.equals("exit"));
 			
 			
