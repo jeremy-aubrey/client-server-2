@@ -144,15 +144,15 @@ public class Server
 	
 	public int getSum(int[] data) {
 		int sum = 0;
-		if(data[2] % 2 == 0) { // even
+		if(data[2] % 2 == 0) { // process evens
 			System.out.println("summing evens");
 			sum = IntStream.rangeClosed(data[0], data[1])
-					.filter(x -> x % 2 == 0) //filter out odds
+					.filter(num -> num % 2 == 0) //filter out odds
 					.sum();
-		} else { // odd
+		} else { // process odds
 			System.out.println("summing odds");
 			sum = IntStream.rangeClosed(data[0], data[1])
-					.filter(x -> x % 2 == 1) //filter out evens
+					.filter(num -> num % 2 == 1) //filter out evens
 					.sum();
 		}
 		
