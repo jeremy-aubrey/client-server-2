@@ -42,10 +42,56 @@ public class Server
 		Server server = new Server();
 		server.developerInfo();
 		
-		server.startListening();
+		int portNumber = 4301;
+		
+		server.startListening(portNumber);
 		
 		
 	}// end main method
+	
+	public void startListening(int portNumber) {
+		
+		try {
+			ServerSocket sock = new ServerSocket(portNumber);
+			System.out.println("\n[ SERVER LISTENTING ON PORT " + portNumber + " ]");
+			Socket client = sock.accept();
+			System.out.println("[ CLIENT CONNECTED ]");
+			
+			respondToInput(client); // process client responses
+			
+			// close the socket and resume
+			// listening for connections
+			client.close();
+			System.out.println("[ CLOSED SOCKET ]");
+			
+		} catch (IOException ioe) {
+			
+			System.err.println(ioe);
+			
+		}
+	}
+	
+	public void respondToInput(Socket client) {
+			
+		try {
+			
+			BufferedReader input = new BufferedReader(
+					new InputStreamReader(client.getInputStream()));
+			PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
+			
+			while (true) {
+				String recievedMessage = input.readLine();
+				String processed = processData(recievedMessage);
+				if(recievedMessage.equals("exit")) {
+					break;
+				}
+				output.println("echo from server: " + processed);
+			}
+		
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 	
 	public String processData(String data) {
 		
@@ -59,19 +105,34 @@ public class Server
 				intArray[i] = Integer.parseInt(strArray[i]);
 			}
 			
-			result = arrToString(intArray);
+			result = getStatisticsOrError(intArray);
 			
 		} catch (NumberFormatException e) {
 			result = "Invalid data, must be of type integer";
 		}
 		
-		
-		
-		
 		return result;
 		
 	}
 	
+	public String getStatisticsOrError(int[] data) {
+		String result = "";
+		if(data.length < 3 || data.length > 3) {
+			result = "Must enter 3 integers";
+		} else if (data[0] <= 0 || data[1] <= 0 || data[2] <= 0) {
+			result = "All integers must be greater than zero.";
+		} else if(data[0] > data[1]) {
+			result = "The first integer must be less than the second";
+		} else if (data[2] != 1 && data[2] != 2) {
+			result = "The third integer must be 1 or 2";
+		
+		} else {
+			result = "valid data : " + arrToString(data);
+		}
+		
+		return result;
+		
+	}
 	
 	public String arrToString(int[] arr) {
 		StringBuffer result = new StringBuffer();
@@ -81,37 +142,6 @@ public class Server
 		
 		return result.toString();
 		
-	}
-	
-	public void startListening() {
-		try {
-			
-			System.out.println("starting server");
-			ServerSocket sock = new ServerSocket(4301);
-			Socket client = sock.accept();
-			System.out.println("Client Connected");
-			BufferedReader input = new BufferedReader(
-					new InputStreamReader(client.getInputStream()));
-			PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
-			
-			while (true) {
-				String recievedMessage = input.readLine();
-				String response = processData(recievedMessage);
-				if(recievedMessage.equals("exit")) {
-					break;
-				}
-				output.println("echo from server: " + response);
-			}
-			
-			// close the socket and resume
-			// listening for connections
-			client.close();
-			
-		} catch (IOException ioe) {
-			
-			System.err.println(ioe);
-			
-		}
 	}
 	
     //***************************************************************
