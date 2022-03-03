@@ -86,7 +86,7 @@ public class Server
 				if(recievedMessage.equals("exit")) {
 					break;
 				}
-				output.println("echo from server: " + processed);
+				output.println(processed);
 			}
 		
 		} catch (IOException e) {
@@ -112,7 +112,7 @@ public class Server
 			result = "Invalid data, must be of type integer";
 		}
 		
-		return result;
+		return result + "\nEND";
 		
 	}
 	
@@ -132,7 +132,10 @@ public class Server
 		} else {
 			
 			// get statistics if valid
-			result = "Sum: " + getSum(data);
+			result = String.format("%-10s %s%n%-9s %s%n%-10s %s%n", 
+					"Sum: ", getSum(data), 
+					"Mean: ", "to-do",
+					"Standard Deviation: ", "to-do");
 		}
 		
 		return result;
