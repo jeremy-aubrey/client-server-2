@@ -12,7 +12,8 @@
 //
 //  Description:   A server that reads integers from a client request
 //                 and generates statistics (sum, mean, and standard
-//                 deviation).
+//                 deviation). Upon a client termination the server resumes
+//                 listening for more clients connections.
 //
 //********************************************************************
 
