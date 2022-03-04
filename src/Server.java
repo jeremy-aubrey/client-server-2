@@ -60,7 +60,7 @@ public class Server
 	
     //***************************************************************
     //
-    //  Method:       selectItems (Non Static)
+    //  Method:       createSocket (Non Static)
     // 
     //  Description:  Attempts to create a new socket on the specified
     //                port number.
