@@ -166,7 +166,7 @@ public class Server
 			
 		} catch (NumberFormatException e) {
 			
-			result = "Invalid data, must be of type integer";
+			result = "Invalid data, enter integers seperated by a space\n";
 		}
 		
 		return result + "\nEND"; // END signifies end of data to client
@@ -330,8 +330,8 @@ public class Server
     public void developerInfo()
     {
        System.out.println("Name:    Jeremy Aubrey");
-       System.out.println("Course:  COSC 4302 Operating Systems");
-       System.out.println("Program: 2");
+       System.out.println("Course:  COSC 4302 Modern Programming");
+       System.out.println("Program: 4");
 
     } // end developerInfo method
     
