@@ -50,7 +50,8 @@ public class Server
 		ServerSocket socket = server.createSocket(portNumber);
 		
 		while (true) {
-		server.startListening(socket); // process client responses
+			server.startListening(socket); // process client responses
+			System.out.println("[ RESUMED LISTENING ]");
 		}
 		
 	}// end main method
@@ -134,7 +135,7 @@ public class Server
 			result = "Must enter 3 integers";
 		} else if (data[0] <= 0 || data[1] <= 0 || data[2] <= 0) {
 			result = "All integers must be greater than zero.";
-		} else if(data[0] > data[1]) {
+		} else if(data[0] >= data[1]) {
 			result = "The first integer must be less than the second";
 		} else if (data[2] != 1 && data[2] != 2) {
 			result = "The third integer must be 1 or 2";
