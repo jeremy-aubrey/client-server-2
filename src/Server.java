@@ -55,12 +55,25 @@ public class Server
 		
 	}// end main method
 	
+    //***************************************************************
+    //
+    //  Method:       selectItems (Non Static)
+    // 
+    //  Description:  Attempts to create a new socket on the specified
+    //                port number.
+    //
+    //  Parameters:   int
+    //
+    //  Returns:      ServerSocket
+    //
+    //**************************************************************
 	public ServerSocket createSocket(int portNumber) {
 		
 		ServerSocket socket = null;
 		
 		try {
-			socket = new ServerSocket(portNumber);
+			
+			socket = new ServerSocket(portNumber); //instantiate new socket
 			System.out.println("\n[ SERVER LISTENTING ON PORT " + portNumber + " ]");
 			
 		} catch (IOException | SecurityException | IllegalArgumentException e) {
@@ -70,61 +83,105 @@ public class Server
 		}
 		
 		return socket;
-	}
+		
+	}// end createSocket method
 	
+    //***************************************************************
+    //
+    //  Method:       startListening (Non Static)
+    // 
+    //  Description:  Begins listening and responding to client
+    //                requests on the provided socket.
+    //
+    //  Parameters:   ServerSocket
+    //
+    //  Returns:      N/A
+    //
+    //**************************************************************
 	public void startListening(ServerSocket socket) {
 			
 		try {
 			
-			Socket client = socket.accept();
+			Socket client = socket.accept(); // blocks until client connects
 			System.out.println("[ CLIENT CONNECTED ]");
 			
-			BufferedReader input = new BufferedReader(
+			// socket input and output
+			BufferedReader input = new BufferedReader( 
 					new InputStreamReader(client.getInputStream()));
 			PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
 			
+			// process requests until client sends "bye"
 			while (true) {
 				
-				String recievedMessage = input.readLine();
-				String processed = processData(recievedMessage);
-				if(recievedMessage.equals("exit")) {
+				String recievedMessage = input.readLine().toLowerCase();
+				if(recievedMessage.equals("bye")) {
 					break;
+				} else {
+					String processed = processData(recievedMessage); //process client request
+					output.println(processed); // send response to client
 				}
-				output.println(processed);
+				
 			}
 			
-			// close the socket and resume
-			// listening for connections
+			// close the socket
 			client.close();
 			System.out.println("[ CLIENT CLOSED ]");
 		
 		} catch (IOException | SecurityException e) {
+			
 			System.out.println(e.getMessage());
 		}
-	}
+	}// end startListening method
 	
+    //***************************************************************
+    //
+    //  Method:       processData (Non Static)
+    // 
+    //  Description:  Attempts to parse client response into int array.
+    //                Will pass data on for further processing or return
+    //                an error message if input cannot be parsed to int.  
+    //
+    //  Parameters:   String
+    //
+    //  Returns:      String
+    //
+    //**************************************************************
 	public String processData(String data) {
 		
+		// convert String into String[]
 		String result = "";
 		String[] strArray = data.trim().replaceAll("\\s+", ",").split(",");
 		int[] intArray = new int[strArray.length];
 		
 		try {
-			
+			// populate a new int[] from new String[]
 			for(int i = 0; i < strArray.length; i++) {
 				intArray[i] = Integer.parseInt(strArray[i]);
 			}
 			
-			result = getStatisticsOrError(intArray);
+			result = getStatisticsOrError(intArray); // get statistics
 			
 		} catch (NumberFormatException e) {
+			
 			result = "Invalid data, must be of type integer";
 		}
 		
-		return result + "\nEND";
+		return result + "\nEND"; // END signifies end of data to client
 		
-	}
+	}// end processData method
 	
+    //***************************************************************
+    //
+    //  Method:       getStatisticsOrError (Non Static)
+    // 
+    //  Description:  Validates data and gets statistics or returns 
+    //                an error message to the client.
+    //
+    //  Parameters:   int[]
+    //
+    //  Returns:      String
+    //
+    //**************************************************************
 	public String getStatisticsOrError(int[] data) {
 		
 		String result = "";
@@ -139,13 +196,14 @@ public class Server
 		} else if (data[2] != 1 && data[2] != 2) {
 			result = "The third integer must be 1 or 2";
 		} else {
-			
+		
+		// get statistics
 		int sum = getSum(getReducedData(data));
 		double mean = getMean(getReducedData(data));
 		int count = (int)getReducedData(data).count();
 		double standardDeviation = getStandardDeviation(getReducedData(data), mean, count);
 			
-		// get statistics if valid
+		// format results
 		result = String.format("%-20s %s%n%-20s %s%n%-20s %s%n", 
 				"Sum: ", sum, 
 				"Mean: ", mean,
@@ -154,49 +212,106 @@ public class Server
 		
 		return result;
 		
-	}
+	}// end getStatisticsOrError method
 	
+    //***************************************************************
+    //
+    //  Method:       getReducedError (Non Static)
+    // 
+    //  Description:  Returns an IntStream of either the even or odd numbers
+    //                from the int[] based on the third element. 
+    //
+    //  Parameters:   int[]
+    //
+    //  Returns:      IntStream
+    //
+    //**************************************************************
 	public IntStream getReducedData(int[] data) {
+		
 		IntStream reducedData;
 		
-		if(data[2] % 2 == 0) { // process evens
+		if(data[2] % 2 == 0) { // get evens
+			
 			reducedData = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 0); //filter out odds
 
-		} else { // process odds
+		} else { // get odds
 			reducedData = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 1); //filter out evens
 		}
 		
 		return reducedData;
-	}
+		
+	}// end getReducedData
 	
+    //***************************************************************
+    //
+    //  Method:       getSum (Non Static)
+    // 
+    //  Description:  Uses terminal sum method on IntStream to obtain 
+    //                sum.
+    //
+    //  Parameters:   IntStream
+    //
+    //  Returns:      int
+    //
+    //**************************************************************
 	public int getSum(IntStream data) {
 		
 		return data.sum();
-	}
+		
+	}// end getSum method
 	
-	public int getMean(IntStream data) {
+    //***************************************************************
+    //
+    //  Method:       getMean (Non Static)
+    // 
+    //  Description:  Uses terminal average method on IntStream to obtain 
+    //                mean.
+    //
+    //  Parameters:   IntStream
+    //
+    //  Returns:      int
+    //
+    //**************************************************************
+	public double getMean(IntStream data) {
 		
 		double mean = 0;
-		
 		OptionalDouble result = data.average();
 		
 		if(result.isPresent()) {
-			mean = result.getAsDouble();
+			mean = result.getAsDouble(); // get double value
 		}
 		
-		return (int) mean;
-	}
+		return mean;
+		
+	}// end getMean method
 	
+	
+    //***************************************************************
+    //
+    //  Method:       getStandardDeviation (Non Static)
+    // 
+    //  Description:  Maps each int to a double, each double to the square
+    //                gets the square root of the sum divided by the count.
+    //                of its distance to the mean, sums the squares, then 
+    //                Uses previously calculated mean to prevent unnecessary
+    //                calculations. 
+    //
+    //  Parameters:   IntStream, double, int
+    //
+    //  Returns:      double
+    //
+    //**************************************************************
 	public double getStandardDeviation(IntStream data, double mean, int count) {
 
-		double sumOfSquares = data.mapToDouble(num -> Double.valueOf(num)) 
+		double sumOfSquares = data.mapToDouble(num -> Double.valueOf(num)) // to double
 				.map(num -> Math.pow((num - mean), 2)) // square distance to mean
 				.sum(); // sum squares
 		
 		return Math.sqrt(sumOfSquares / count); // get square root of sum / count 
-	}
+		
+	}// end getStandardDeviation method
 	
     //***************************************************************
     //
