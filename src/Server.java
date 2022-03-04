@@ -162,7 +162,7 @@ public class Server
 	
 	public double getMean(int[] data) {
 		
-		double mean = 0.0;
+		int mean = 0;
 		OptionalDouble result;
 		
 		if(data[2] % 2 == 0) { // process evens
@@ -178,7 +178,7 @@ public class Server
 		}
 		
 		if(result.isPresent()) {
-			mean = result.getAsDouble();
+			mean = (int)result.getAsDouble();
 		}
 		
 		return mean;
