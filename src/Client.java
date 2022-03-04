@@ -42,6 +42,7 @@ public class Client
 		// the non-static developerInfo and other non-static methods
 	    Client client = new Client();
 		client.developerInfo();
+		client.instructions();
 		
 		String host = "127.0.0.1"; 
 		int port = 4301;
@@ -109,7 +110,7 @@ public class Client
 			
 			do { // send requests until user quits
 				
-				System.out.println("Enter a message: ");
+				System.out.println("Enter 3 integers: ");
 				request = scanner.nextLine().toLowerCase(); // get user input
 				writer.println(request); // send input (request) to server
 				
@@ -134,6 +135,30 @@ public class Client
 			System.out.println(e.getMessage());
 		}
 	} // end sendRequest method
+	
+    //***************************************************************
+    //
+    //  Method:       instructions (Non Static)
+    // 
+    //  Description:  Displays user instructions.
+    //
+    //  Parameters:   None
+    //
+    //  Returns:      N/A 
+    //
+    //**************************************************************
+	public void instructions() {
+		
+		System.out.println("\n[ INSTRUCTIONS ]");
+		System.out.println("----------------------------------------------");
+		System.out.println("Enter 3 integers seperated by a space.");
+		System.out.println("The first integer must be less than the second.");
+		System.out.println("The third integer must be a 1 (odd) or 2 (even).");
+		System.out.println("All integers must be greater than zero.");
+		System.out.println("Enter 'bye' to quit");
+		System.out.println("----------------------------------------------");
+		
+	}// end instructions method
 	
     //***************************************************************
     //
