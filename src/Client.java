@@ -20,8 +20,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Client
 {
@@ -43,48 +41,72 @@ public class Client
 	    Client client = new Client();
 		client.developerInfo();
 		
+		String host = "127.0.0.1";
+		int port = 4301;
+		
+		Socket socket = client.connect(host, port);
+		client.sendRequest(socket);
+
+	} // end main method
+	
+	public Socket connect(String host, int port) {
+		
+		Socket socket = null;
+		
 		try {
 			// make connection to server socket
-			Socket sock = new Socket("127.0.0.1", 4301);
+			socket = new Socket(host, port);
+				
+		} catch (IOException e) {
+				
+			System.err.println(e);
+				
+		}
+		
+		return socket;
+	}
+	
+	public void sendRequest(Socket socket) {
+		
+		try {
 			
-			BufferedReader echoes = new BufferedReader(
-					new InputStreamReader(sock.getInputStream()));
+			BufferedReader buffer = new BufferedReader(
+					new InputStreamReader(socket.getInputStream()));
 			
-			PrintWriter stringToEcho = new PrintWriter(sock.getOutputStream(), true);
+			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 			
 			Scanner scanner = new Scanner(System.in);
-			String echoString;
+			String request;
 			String response;
 			
 			do {
-				System.out.println("Enter a message: ");
-				echoString = scanner.nextLine();
-				stringToEcho.println(echoString);
 				
-				if(!echoString.equals("exit")) {
+				System.out.println("Enter a message: ");
+				request = scanner.nextLine().toLowerCase();
+				writer.println(request);
+				
+				if(!request.equals("exit")) {
 					
-					response = echoes.readLine();
-					
+					response = buffer.readLine();
 					while(!response.equals("END")) {
 						System.out.println(response);
-						response = echoes.readLine();
+						response = buffer.readLine();
 					}
 				}
 				
-			} while (!echoString.equals("exit"));
+			} while (!request.equals("exit"));
 			
+			//close scanner
+			scanner.close();
 			
 			//close the socket connection
-			sock.close();
+			socket.close();
 			System.out.println("[ CLOSED SOCKET ]");
-				
-		} catch (IOException ioe) {
-				
-			System.err.println(ioe);
-				
+	
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
 		}
-
-	} // end main method
+	}
 	
     //***************************************************************
     //
