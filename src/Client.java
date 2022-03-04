@@ -2,7 +2,7 @@
 //
 //  Program #:     4
 //
-//  File Name:     Server.java
+//  File Name:     Client.java
 //
 //  Course:        COSC 4301 - Modern Programming
 //
@@ -10,7 +10,9 @@
 //
 //  Instructor:    Fred Kumi 
 //
-//  Description:   
+//  Description:   A client that sends integer data to a server in 
+//                 order to obtain statistics (sum, mean, and standard
+//                 deviation).
 //
 //********************************************************************
 
@@ -41,14 +43,26 @@ public class Client
 	    Client client = new Client();
 		client.developerInfo();
 		
-		String host = "127.0.0.1";
+		String host = "127.0.0.1"; 
 		int port = 4301;
 		
-		Socket socket = client.connect(host, port);
-		client.sendRequest(socket);
+		Socket socket = client.connect(host, port); // connect to server
+		client.sendRequest(socket);  // send requests
 
 	} // end main method
 	
+    //***************************************************************
+    //
+    //  Method:       connect (Non Static)
+    // 
+    //  Description:  Attempts to create a socket connection with the 
+    //                server on the specified host and port number (socket).
+    //
+    //  Parameters:   String, int
+    //
+    //  Returns:      Socket
+    //
+    //**************************************************************
 	public Socket connect(String host, int port) {
 		
 		Socket socket = null;
@@ -57,36 +71,50 @@ public class Client
 			// make connection to server socket
 			socket = new Socket(host, port);
 				
-		} catch (IOException e) {
+		} catch (IOException | SecurityException | IllegalArgumentException e) {
 				
-			System.err.println(e);
-				
+			System.err.println(e.getMessage());	
 		}
 		
 		return socket;
-	}
+		
+	}// end connect method
 	
+    //***************************************************************
+    //
+    //  Method:       sendRequest (Non Static)
+    // 
+    //  Description:  Establishes I/O for the socket connection and 
+    //                prompts user for data to send to the server.
+    //                The user can make as many requests as they wish
+    //                until a sentinel value of "bye" is entered.
+    //
+    //  Parameters:   Socket
+    //
+    //  Returns:      N/A
+    //
+    //**************************************************************
 	public void sendRequest(Socket socket) {
 		
 		try {
 			
+			// socket input and output
 			BufferedReader buffer = new BufferedReader(
 					new InputStreamReader(socket.getInputStream()));
-			
 			PrintWriter writer = new PrintWriter(socket.getOutputStream(), true);
 			
 			Scanner scanner = new Scanner(System.in);
-			String request;
-			String response;
+			String request; // to send to server
+			String response; // to hold the server's response
 			
-			do {
+			do { // send requests until user quits
 				
 				System.out.println("Enter a message: ");
-				request = scanner.nextLine().toLowerCase();
-				writer.println(request);
+				request = scanner.nextLine().toLowerCase(); // get user input
+				writer.println(request); // send input (request) to server
 				
-				if(!request.equals("exit")) {
-					
+				// process multi-line response
+				if(!request.equals("bye")) { 
 					response = buffer.readLine();
 					while(!response.equals("END")) {
 						System.out.println(response);
@@ -94,19 +122,18 @@ public class Client
 					}
 				}
 				
-			} while (!request.equals("exit"));
+			} while (!request.equals("bye")); // repeat until "bye" found
 			
-			//close scanner
+			//close resources
 			scanner.close();
-			
-			//close the socket connection
 			socket.close();
 			System.out.println("[ CLOSED SOCKET ]");
 	
 		} catch (IOException e) {
+			
 			System.out.println(e.getMessage());
 		}
-	}
+	} // end sendRequest method
 	
     //***************************************************************
     //
@@ -122,9 +149,9 @@ public class Client
     public void developerInfo()
     {
        System.out.println("Name:    Jeremy Aubrey");
-       System.out.println("Course:  COSC 4302 Operating Systems");
-       System.out.println("Program: 2");
+       System.out.println("Course:  COSC 4302 Modern Programming");
+       System.out.println("Program: 4");
 
     } // end developerInfo method
     
-}// end QuoteClient class
+}// end Client class
