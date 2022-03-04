@@ -47,42 +47,44 @@ public class Server
 		
 		int portNumber = 4301;
 		
-		server.startListening(portNumber);
+		ServerSocket socket = server.createSocket(portNumber);
 		
+		while (true) {
+		server.startListening(socket); // process client responses
+		}
 		
 	}// end main method
 	
-	public void startListening(int portNumber) {
+	public ServerSocket createSocket(int portNumber) {
+		
+		ServerSocket socket = null;
 		
 		try {
-			ServerSocket sock = new ServerSocket(portNumber);
+			socket = new ServerSocket(portNumber);
 			System.out.println("\n[ SERVER LISTENTING ON PORT " + portNumber + " ]");
-			Socket client = sock.accept();
-			System.out.println("[ CLIENT CONNECTED ]");
 			
-			respondToInput(client); // process client responses
+		} catch (IOException | SecurityException | IllegalArgumentException e) {
 			
-			// close the socket and resume
-			// listening for connections
-			client.close();
-			System.out.println("[ CLOSED SOCKET ]");
-			
-		} catch (IOException ioe) {
-			
-			System.err.println(ioe);
+			System.err.println(e);
 			
 		}
+		
+		return socket;
 	}
 	
-	public void respondToInput(Socket client) {
+	public void startListening(ServerSocket socket) {
 			
 		try {
+			
+			Socket client = socket.accept();
+			System.out.println("[ CLIENT CONNECTED ]");
 			
 			BufferedReader input = new BufferedReader(
 					new InputStreamReader(client.getInputStream()));
 			PrintWriter output = new PrintWriter(client.getOutputStream(), true); // auto flush output (true)
 			
 			while (true) {
+				
 				String recievedMessage = input.readLine();
 				String processed = processData(recievedMessage);
 				if(recievedMessage.equals("exit")) {
@@ -90,8 +92,13 @@ public class Server
 				}
 				output.println(processed);
 			}
+			
+			// close the socket and resume
+			// listening for connections
+			client.close();
+			System.out.println("[ CLIENT CLOSED ]");
 		
-		} catch (IOException e) {
+		} catch (IOException | SecurityException e) {
 			System.out.println(e.getMessage());
 		}
 	}
@@ -189,16 +196,6 @@ public class Server
 				.sum(); // sum squares
 		
 		return Math.sqrt(sumOfSquares / count); // get square root of sum / count 
-	}
-	
-	public String arrToString(int[] arr) {
-		StringBuffer result = new StringBuffer();
-		for(int num : arr) {
-			result.append(num);
-		}
-		
-		return result.toString();
-		
 	}
 	
     //***************************************************************
