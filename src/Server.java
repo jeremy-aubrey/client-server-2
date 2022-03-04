@@ -133,94 +133,62 @@ public class Server
 			result = "The third integer must be 1 or 2";
 		} else {
 			
-			int sum = getSum(data);
-			double mean = getMean(data);
-			double standardDeviation = getStandardDeviation(data, mean);
+		int sum = getSum(getReducedData(data));
+		double mean = getMean(getReducedData(data));
+		int count = (int)getReducedData(data).count();
+		double standardDeviation = getStandardDeviation(getReducedData(data), mean, count);
 			
-			
-			// get statistics if valid
-			result = String.format("%-10s %s%n%-9s %s%n%-10s %s%n", 
-					"Sum: ", sum, 
-					"Mean: ", mean,
-					"Standard Deviation: ", getStandardDeviation(data, mean));
+		// get statistics if valid
+		result = String.format("%-20s %s%n%-20s %s%n%-20s %s%n", 
+				"Sum: ", sum, 
+				"Mean: ", mean,
+				"Standard Deviation: ", String.format("%.2f", standardDeviation));
 		}
 		
 		return result;
 		
 	}
 	
-	public int getSum(int[] data) {
-		int sum = 0;
+	public IntStream getReducedData(int[] data) {
+		IntStream reducedData;
+		
 		if(data[2] % 2 == 0) { // process evens
-			sum = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 0) //filter out odds
-					.sum();
+			reducedData = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 0); //filter out odds
+
 		} else { // process odds
-			sum = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 1) //filter out evens
-					.sum();
+			reducedData = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 1); //filter out evens
 		}
 		
-		return sum;
+		return reducedData;
 	}
 	
-	public double getMean(int[] data) {
+	public int getSum(IntStream data) {
+		
+		return data.sum();
+	}
+	
+	public int getMean(IntStream data) {
 		
 		double mean = 0;
-		OptionalDouble result;
 		
-		if(data[2] % 2 == 0) { // process evens
-			result = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 0) // filter out odds
-					.average();
-		} else { //process odds
-			result = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 1) // filter out evens
-					.average();
-		}
+		OptionalDouble result = data.average();
 		
 		if(result.isPresent()) {
 			mean = result.getAsDouble();
 		}
 		
-		return mean;
+		return (int) mean;
 	}
 	
-	public double getStandardDeviation(int[] data, double mean) {
-		double stDev = 0.0;
-		double sumOfSquares = 0.0;
+	public double getStandardDeviation(IntStream data, double mean, int count) {
+
+		double sumOfSquares = data.mapToDouble(num -> Double.valueOf(num)) 
+				.map(num -> Math.pow((num - mean), 2)) // square distance to mean
+				.sum(); // sum squares
 		
-		if(data[2] % 2 == 0) {// process evens
-			 sumOfSquares = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 0)
-					.mapToDouble(num -> Double.valueOf(num)) 
-					.map(num -> Math.pow((num - mean), 2)) // square distance to mean
-					.sum();
-			
-		} else { // process odds
-			sumOfSquares = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 1)
-					.mapToDouble(num -> Double.valueOf(num))
-					.map(num -> Math.pow((num - mean), 2)) // square distance to mean
-					.sum();
-		}
-		
-		return Math.sqrt(sumOfSquares / getCount(data));
-	}
-	
-	public int getCount(int[] data) {
-		long count = 0;
-		if(data[2] % 2 == 0) {
-			count = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 0)
-					.count();
-		} else {
-			count = IntStream.rangeClosed(data[0], data[1])
-					.filter(num -> num % 2 == 1)
-					.count();
-		}
-		System.out.println("count " + count);
-		return (int)count;
+		return Math.sqrt(sumOfSquares / count); // get square root of sum / count 
 	}
 	
 	public String arrToString(int[] arr) {
