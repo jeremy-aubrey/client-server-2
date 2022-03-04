@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.OptionalDouble;
 import java.util.stream.IntStream;
 
 public class Server
@@ -97,7 +98,7 @@ public class Server
 	public String processData(String data) {
 		
 		String result = "";
-		String[] strArray = data.split(" ");
+		String[] strArray = data.trim().replaceAll("\\s+", ",").split(",");
 		int[] intArray = new int[strArray.length];
 		
 		try {
@@ -134,7 +135,7 @@ public class Server
 			// get statistics if valid
 			result = String.format("%-10s %s%n%-9s %s%n%-10s %s%n", 
 					"Sum: ", getSum(data), 
-					"Mean: ", "to-do",
+					"Mean: ", getMean(data),
 					"Standard Deviation: ", "to-do");
 		}
 		
@@ -157,6 +158,30 @@ public class Server
 		}
 		
 		return sum;
+	}
+	
+	public double getMean(int[] data) {
+		
+		double mean = 0.0;
+		OptionalDouble result;
+		
+		if(data[2] % 2 == 0) { // process evens
+			System.out.println("mean of evens");
+			result = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 0) // filter out odds
+					.average();
+		} else { //process odds
+			System.out.println("mean of odds");
+			result = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 1) // filter out evens
+					.average();
+		}
+		
+		if(result.isPresent()) {
+			mean = result.getAsDouble();
+		}
+		
+		return mean;
 	}
 	
 	public String arrToString(int[] arr) {
