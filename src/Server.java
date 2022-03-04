@@ -10,7 +10,9 @@
 //
 //  Instructor:    Fred Kumi 
 //
-//  Description:   
+//  Description:   A server that reads integers from a client request
+//                 and generates statistics (sum, mean, and standard
+//                 deviation).
 //
 //********************************************************************
 
