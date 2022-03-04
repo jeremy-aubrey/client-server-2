@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.OptionalDouble;
 import java.util.stream.IntStream;
 
@@ -132,11 +133,16 @@ public class Server
 			result = "The third integer must be 1 or 2";
 		} else {
 			
+			int sum = getSum(data);
+			double mean = getMean(data);
+			double standardDeviation = getStandardDeviation(data, mean);
+			
+			
 			// get statistics if valid
 			result = String.format("%-10s %s%n%-9s %s%n%-10s %s%n", 
-					"Sum: ", getSum(data), 
-					"Mean: ", getMean(data),
-					"Standard Deviation: ", "to-do");
+					"Sum: ", sum, 
+					"Mean: ", mean,
+					"Standard Deviation: ", getStandardDeviation(data, mean));
 		}
 		
 		return result;
@@ -146,12 +152,10 @@ public class Server
 	public int getSum(int[] data) {
 		int sum = 0;
 		if(data[2] % 2 == 0) { // process evens
-			System.out.println("summing evens");
 			sum = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 0) //filter out odds
 					.sum();
 		} else { // process odds
-			System.out.println("summing odds");
 			sum = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 1) //filter out evens
 					.sum();
@@ -162,26 +166,61 @@ public class Server
 	
 	public double getMean(int[] data) {
 		
-		int mean = 0;
+		double mean = 0;
 		OptionalDouble result;
 		
 		if(data[2] % 2 == 0) { // process evens
-			System.out.println("mean of evens");
 			result = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 0) // filter out odds
 					.average();
 		} else { //process odds
-			System.out.println("mean of odds");
 			result = IntStream.rangeClosed(data[0], data[1])
 					.filter(num -> num % 2 == 1) // filter out evens
 					.average();
 		}
 		
 		if(result.isPresent()) {
-			mean = (int)result.getAsDouble();
+			mean = result.getAsDouble();
 		}
 		
 		return mean;
+	}
+	
+	public double getStandardDeviation(int[] data, double mean) {
+		double stDev = 0.0;
+		double sumOfSquares = 0.0;
+		
+		if(data[2] % 2 == 0) {// process evens
+			 sumOfSquares = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 0)
+					.mapToDouble(num -> Double.valueOf(num)) 
+					.map(num -> Math.pow((num - mean), 2)) // square distance to mean
+					.sum();
+			
+		} else { // process odds
+			sumOfSquares = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 1)
+					.mapToDouble(num -> Double.valueOf(num))
+					.map(num -> Math.pow((num - mean), 2)) // square distance to mean
+					.sum();
+		}
+		
+		return Math.sqrt(sumOfSquares / getCount(data));
+	}
+	
+	public int getCount(int[] data) {
+		long count = 0;
+		if(data[2] % 2 == 0) {
+			count = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 0)
+					.count();
+		} else {
+			count = IntStream.rangeClosed(data[0], data[1])
+					.filter(num -> num % 2 == 1)
+					.count();
+		}
+		System.out.println("count " + count);
+		return (int)count;
 	}
 	
 	public String arrToString(int[] arr) {
