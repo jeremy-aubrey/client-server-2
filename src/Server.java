@@ -82,7 +82,6 @@ public class Server
 		} catch (IOException | SecurityException | IllegalArgumentException e) {
 			
 			System.err.println(e);
-			
 		}
 		
 		return socket;
@@ -123,7 +122,6 @@ public class Server
 					String processed = processData(recievedMessage); //process client request
 					output.println(processed); // send response to client
 				}
-				
 			}
 			
 			// close the socket
