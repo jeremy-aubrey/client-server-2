@@ -12,7 +12,7 @@
 //
 //  Description:   A server that reads integers from a client request
 //                 and generates statistics (sum, mean, and standard
-//                 deviation). Upon a client termination the server resumes
+//                 deviation). Upon client termination the server resumes
 //                 listening for more clients connections.
 //
 //********************************************************************
@@ -272,7 +272,7 @@ public class Server
     //
     //  Parameters:   IntStream
     //
-    //  Returns:      int
+    //  Returns:      double
     //
     //**************************************************************
 	public double getMean(IntStream data) {
@@ -294,8 +294,8 @@ public class Server
     //  Method:       getStandardDeviation (Non Static)
     // 
     //  Description:  Maps each int to a double, each double to the square
-    //                gets the square root of the sum divided by the count.
     //                of its distance to the mean, sums the squares, then 
+    //                gets the square root of the sum divided by the count.
     //                Uses previously calculated mean to prevent unnecessary
     //                calculations. 
     //
