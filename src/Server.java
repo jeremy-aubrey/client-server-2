@@ -10,10 +10,10 @@
 //
 //  Instructor:    Fred Kumi 
 //
-//  Description:   A server that reads integers from a client request
+//  Description:   A server that accepts integer data from a client 
 //                 and generates statistics (sum, mean, and standard
-//                 deviation). Upon client termination the server resumes
-//                 listening for more clients connections.
+//                 deviation). Upon client termination the server 
+//                 resumes listening for more clients connections.
 //
 //********************************************************************
 
@@ -26,21 +26,20 @@ import java.net.Socket;
 import java.util.OptionalDouble;
 import java.util.stream.IntStream;
 
-public class Server
-{
+public class Server {
+	
     //***************************************************************
     //
     //  Method:       main
     // 
-    //  Description:  The main method of the project
+    //  Description:  The main method of the Server
     //
     //  Parameters:   String array
     //
     //  Returns:      N/A 
     //
     //**************************************************************
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
 		
 		// create an object of the main class and use it to call
 		// the non-static developerInfo and other non-static methods
