@@ -21,23 +21,24 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
-public class Client
-{
+public class Client {
+	
     //***************************************************************
     //
     //  Method:       main
     // 
-    //  Description:  The main method of the project
+    //  Description:  The main method of the Client
     //
     //  Parameters:   String array
     //
     //  Returns:      N/A 
     //
     //**************************************************************
-	public static void main(String[] args)
-	{
+	public static void main(String[] args) {
+		
 		// create an object of the main class and use it to call
 		// the non-static developerInfo and other non-static methods
 	    Client client = new Client();
@@ -123,7 +124,7 @@ public class Client
 					}
 				}
 				
-			} while (!request.equals("bye")); // repeat until "bye" found
+			} while (!request.equals("bye")); // repeat until "bye" entered by user
 			
 			//close resources
 			scanner.close();
@@ -131,6 +132,10 @@ public class Client
 			System.out.println("[ CLOSED SOCKET ]");
 	
 		} catch (IOException e) {
+			
+			System.out.println(e.getMessage());
+		
+		} catch (NoSuchElementException | IllegalStateException e) {
 			
 			System.out.println(e.getMessage());
 		}
