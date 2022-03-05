@@ -52,9 +52,7 @@ public class Server {
 		
 		while (true) {
 			server.startListening(socket); // process client responses
-			System.out.println("[ RESUMED LISTENING ]");
-		}
-		
+		}	
 	}// end main method
 	
     //***************************************************************
@@ -76,7 +74,6 @@ public class Server {
 		try {
 			
 			socket = new ServerSocket(portNumber); //instantiate new socket
-			System.out.println("\n[ SERVER LISTENTING ON PORT " + portNumber + " ]");
 			
 		} catch (IOException | SecurityException | IllegalArgumentException e) {
 			
@@ -103,6 +100,7 @@ public class Server {
 			
 		try {
 			
+			System.out.println("\n[ SERVER LISTENTING ON PORT " + socket.getLocalPort() + " ]");
 			Socket client = socket.accept(); // blocks until client connects
 			System.out.println("[ CLIENT CONNECTED ]");
 			
