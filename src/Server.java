@@ -1,4 +1,4 @@
-//  Author:        Jeremy Aubrey
+//  Author:        
 //
 //  Program #:     4
 //
